@@ -1,9 +1,13 @@
 import React from 'react'
 
-export default function Dropdown() {
+export default function Dropdown(props) {
+  const { options } = props;
   return (
       <select>
-        <option value="Hi">Hi</option>
+        Hi
+        {/* {options.map(option => {
+          <option key={option} value={option}>{option}</option>
+        })} */}
       </select>
   )
 }
