@@ -1,0 +1,28 @@
+*{
+    margin: 0;
+}
+
+.header{
+    display: flex;
+    justify-content: space-between;
+    height: 10%;
+    padding: 1% 2%;
+    background-color: black;
+}
+
+.search{
+    width: 30%;
+    max-width: 150px;
+    height: 100%;
+    border-radius: 5px;
+    border: none;
+    margin: auto 0;
+}
+
+span{
+    color: white;
+}
+
+.filter-container{
+    display: inline-block;
+}
