@@ -2,6 +2,11 @@
     margin: 0;
 }
 
+body{
+    padding-bottom: 10px;
+    background-color: rgb(50,50,50);
+}
+
 .header{
     display: flex;
     justify-content: space-between;
@@ -11,18 +16,27 @@
 }
 
 .search{
-    width: 30%;
-    max-width: 150px;
-    height: 100%;
-    border-radius: 5px;
+    font-size: clamp(8px,4vw,12px);
+    width: 20vw;
+    max-width: 110px;
+    border-radius: 2px;
     border: none;
     margin: auto 0;
 }
 
 span{
+    font-size: clamp(8px,5vw,16px);
     color: white;
 }
 
 .filter-container{
     display: inline-block;
+    margin: 0 5px;
+    
+}
+
+.main{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 }
