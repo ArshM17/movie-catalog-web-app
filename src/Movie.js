@@ -8,7 +8,7 @@ const genres = {28:"Action",12:"Adventure",16:"Animation",35:"Comedy",80:"Crime"
 export default function Movie( {movie} ) {
   return (
     <div className="movie">
-        <img src={`${IMAGE_URL}${movie.poster_path}`}></img>
+        <img src={`${IMAGE_URL}${movie.poster_path}`} alt="alt"></img>
         <div className="info">
             <div className="title-rating">
                 <h4 className="title">{movie.title}</h4>

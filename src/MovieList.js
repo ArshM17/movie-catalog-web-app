@@ -4,7 +4,11 @@ import Movie from './Movie'
 export default function MovieList({ movies }) {
   return (
     movies.map((movie,index) => {
-        return <Movie key={index} movie={movie} />
+        if(movie.poster_path){
+          return <Movie key={index} movie={movie} />
+        }else{
+          return null;
+        }
     })
   )
 }
