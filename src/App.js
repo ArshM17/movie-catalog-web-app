@@ -8,20 +8,34 @@ const BASE_URL = 'https://api.themoviedb.org/3';
 const CURR_URL = `${BASE_URL}/discover/movie?sort_by=popularity.desc&${API_KEY}`;
 const OPTIONS_URL = `${BASE_URL}/genre/movie/list?${API_KEY}`;
 const SEARCH_URL = `${BASE_URL}/search/movie?${API_KEY}&query=`;
+const genres = {28:"Action",12:"Adventure",16:"Animation",35:"Comedy",80:"Crime",99:"Documentary",18:"Drama",10751:"Family",14:"Fantasy",36:"History",27:"Horror",10402:"Music",9648:"Mystery",10749:"Romance",878:"Science Fiction",10770:"TV Movie",53:"Thriller",10752:"War",37:"Western"}
+
+function swap(json){
+  var ret = {};
+  for(var key in json){
+    ret[json[key]] = key;
+  }
+  return ret;
+}
+
+const genreIds = swap(genres);
 
 function App() {
   const [movies,setMovies] = useState([]);
   const [genreOptions,setGenreOptions] = useState([]);
   const [sortByOptions,setSortByOptions] = useState([]);
+  const [genreOption, setGenreOption] = useState();
+  const [sortByOption, setSortByOption] = useState();
   const [searchText,setSearchText] = useState("");
   useEffect(() => {
     fetch(CURR_URL).then(res => res.json()).then(data => {
       setMovies(data.results);
     });
     fetch(OPTIONS_URL).then(res => res.json()).then(data => {
-      setGenreOptions(data.genres.map(genre => genre.name));
+      // setGenreOptions(data.genres.map(genre => genre.name));
+      setGenreOptions(data.genres);
     });
-    setSortByOptions(["Rating","Year","Runtime"]);
+    setSortByOptions([{"name":"Popularity","id":0},{"name":"Rating","id":1},{"name":"Date Of Release","id":2},{"name":"Vote Count","id":3}]);
   },[]);
 
   function handleSearchTextChange(e){
@@ -41,17 +55,44 @@ function App() {
     }
   }
 
+  function handleGenreChange(e){
+    let val = e.target.value;
+    setGenreOption(val);
+    let id = genreIds[val];
+    fetch(`${CURR_URL}&with_genres=${id}`).then(res => res.json()).then(data => {
+      setMovies(data.results);
+    });
+  }
+
+  function handleSortByChange(e){
+    setSortByOption(e.target.value);
+    setMovies(prev => {
+      switch(e.target.value){
+        case "Popularity":
+          return prev.sort((a,b)=>b.popularity-a.popularity);
+        case "Rating":
+          return prev.sort((a,b)=>b.vote_average-a.vote_average);
+        case "Date Of Release":
+          return prev.sort((a,b)=>b.release_date.localeCompare(a.release_date));
+        case "Vote Count":
+          return prev.sort((a,b)=>b.vote_count-a.vote_count);
+        default:
+          return null;
+      }
+    })
+  }
+
   return(
     <>
       <div className="header">
         <div>
           <div className="filter-container">
             <span>Genre:</span>
-            <Dropdown options={genreOptions}/>
+            <Dropdown options={genreOptions} selectedOption={genreOption} onChangeOption={handleGenreChange}/>
           </div>
           <div className="filter-container">
             <span>Sort By:</span>
-            <Dropdown options={sortByOptions}/>
+            <Dropdown options={sortByOptions} selectedOption={sortByOption} onChangeOption={handleSortByChange}/>
           </div>
         </div>
         <form onSubmit={handleMovies}>
