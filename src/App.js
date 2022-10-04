@@ -2,6 +2,8 @@ import React , { useState , useEffect } from 'react';
 import './App.css';
 import Dropdown from './Dropdown';
 import MovieList from './MovieList';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const API_KEY = 'api_key=e9246bccac0cc37bfa23da854731c67b';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -53,6 +55,7 @@ function App() {
         setMovies(data.results);
       });
     }
+    setSortByOption("Popularity");
   }
 
   function handleGenreChange(e){
@@ -62,6 +65,7 @@ function App() {
     fetch(`${CURR_URL}&with_genres=${id}`).then(res => res.json()).then(data => {
       setMovies(data.results);
     });
+    setSearchText("");
   }
 
   function handleSortByChange(e){
@@ -84,23 +88,23 @@ function App() {
 
   return(
     <>
-      <div className="header">
-        <div>
-          <div className="filter-container">
-            <span>Genre:</span>
-            <Dropdown options={genreOptions} selectedOption={genreOption} onChangeOption={handleGenreChange}/>
-          </div>
-          <div className="filter-container">
-            <span>Sort By:</span>
-            <Dropdown options={sortByOptions} selectedOption={sortByOption} onChangeOption={handleSortByChange}/>
-          </div>
+      <div className="wrapper">
+        <div className="header">
+            <form onSubmit={handleMovies}>
+              <input type="text" placeholder="Search" value={searchText} className="search" onChange={handleSearchTextChange}></input><span className="searchIcon" onClick={handleMovies}><FontAwesomeIcon icon={faSearch}></FontAwesomeIcon></span>
+            </form>
+            <div className="filter-container">
+              <span>Genre:</span>
+              <Dropdown options={genreOptions} selectedOption={genreOption} onChangeOption={handleGenreChange}/>
+            </div>
+            <div className="filter-container">
+              <span>Sort By:</span>
+              <Dropdown options={sortByOptions} selectedOption={sortByOption} onChangeOption={handleSortByChange}/>
+            </div>
         </div>
-        <form onSubmit={handleMovies}>
-          <input type="text" placeholder="Search" value={searchText} className="search" onChange={handleSearchTextChange}></input>
-        </form>
-      </div>
-      <div className='main'>
-        <MovieList movies={movies}/>
+        <div className='main'>
+          <MovieList movies={movies}/>
+        </div>
       </div>
     </>
   )
