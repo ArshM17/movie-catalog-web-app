@@ -1,9 +1,11 @@
-import React , { useState , useEffect } from 'react';
+import React , { useState , useEffect, createContext } from 'react';
 import './App.css';
 import Dropdown from './Dropdown';
 import MovieList from './MovieList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faVolleyballBall } from '@fortawesome/free-solid-svg-icons';
+
+export const FavouriteMoviesContext = React.createContext();
 
 const API_KEY = 'api_key=e9246bccac0cc37bfa23da854731c67b';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -29,17 +31,16 @@ function App() {
   const [genreOption, setGenreOption] = useState();
   const [sortByOption, setSortByOption] = useState();
   const [searchText,setSearchText] = useState("");
+  const [favouriteMovies,setFavouriteMovies] =  useState([]);
   useEffect(() => {
     fetch(CURR_URL).then(res => res.json()).then(data => {
-      setMovies(data.results);
+      setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
     });
     fetch(OPTIONS_URL).then(res => res.json()).then(data => {
-      // setGenreOptions(data.genres.map(genre => genre.name));
       setGenreOptions(data.genres);
     });
     setSortByOptions([{"name":"Popularity","id":0},{"name":"Rating","id":1},{"name":"Date Of Release","id":2},{"name":"Vote Count","id":3}]);
   },[]);
-
   function handleSearchTextChange(e){
     setSearchText(e.target.value);
   }
@@ -48,11 +49,11 @@ function App() {
     e.preventDefault();
     if(searchText){
       fetch(SEARCH_URL+searchText).then(res => res.json()).then(data => {
-        setMovies(data.results);
+        setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
       });
     }else{
       fetch(CURR_URL).then(res => res.json()).then(data => {
-        setMovies(data.results);
+        setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
       });
     }
     setSortByOption("Popularity");
@@ -63,9 +64,13 @@ function App() {
     setGenreOption(val);
     let id = genreIds[val];
     fetch(`${CURR_URL}&with_genres=${id}`).then(res => res.json()).then(data => {
-      setMovies(data.results);
+      setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
     });
     setSearchText("");
+  }
+
+  function displayFavourites(){
+    setMovies(favouriteMovies);
   }
 
   function handleSortByChange(e){
@@ -87,6 +92,7 @@ function App() {
   }
 
   return(
+    <FavouriteMoviesContext.Provider value={[favouriteMovies,setFavouriteMovies]}>
     <>
       <div className="wrapper">
         <div className="header">
@@ -101,12 +107,16 @@ function App() {
               <span>Sort By:</span>
               <Dropdown options={sortByOptions} selectedOption={sortByOption} onChangeOption={handleSortByChange}/>
             </div>
+            <div className="fav" onClick={displayFavourites}>
+              Favourites
+            </div>
         </div>
         <div className='main'>
           <MovieList movies={movies}/>
         </div>
       </div>
     </>
+    </FavouriteMoviesContext.Provider>
   )
 }
 

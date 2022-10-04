@@ -36,6 +36,8 @@ body{
 span{
     /* font-size: clamp(8px,5vw,16px); */
     color: white;
+    cursor: default;
+    user-select: none;
 }
 
 .filter-container{
@@ -62,4 +64,14 @@ span{
 
 .searchIcon:hover{
     background-color: #999;
+}
+
+.fav{
+    color: white;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.fav:hover{
+    color: #999;
 }
