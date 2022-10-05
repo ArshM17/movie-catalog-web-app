@@ -3,9 +3,9 @@ import './App.css';
 import Dropdown from './Dropdown';
 import MovieList from './MovieList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, faVolleyballBall } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
-export const FavouriteMoviesContext = React.createContext();
+export const FavouriteMoviesContext = createContext();
 
 const API_KEY = 'api_key=e9246bccac0cc37bfa23da854731c67b';
 const BASE_URL = 'https://api.themoviedb.org/3';
@@ -13,6 +13,7 @@ const CURR_URL = `${BASE_URL}/discover/movie?sort_by=popularity.desc&${API_KEY}`
 const OPTIONS_URL = `${BASE_URL}/genre/movie/list?${API_KEY}`;
 const SEARCH_URL = `${BASE_URL}/search/movie?${API_KEY}&query=`;
 const genres = {28:"Action",12:"Adventure",16:"Animation",35:"Comedy",80:"Crime",99:"Documentary",18:"Drama",10751:"Family",14:"Fantasy",36:"History",27:"Horror",10402:"Music",9648:"Mystery",10749:"Romance",878:"Science Fiction",10770:"TV Movie",53:"Thriller",10752:"War",37:"Western"}
+const STORAGE_KEY = 'app.storageKey'
 
 function swap(json){
   var ret = {};
@@ -33,7 +34,10 @@ function App() {
   const [searchText,setSearchText] = useState("");
   const [favouriteMovies,setFavouriteMovies] =  useState([]);
   const [favTab, setFavTab] = useState(false);
+  
   useEffect(() => {
+    const storedFavs = JSON.parse(localStorage.getItem(STORAGE_KEY))
+    if(storedFavs) setFavouriteMovies(storedFavs);
     fetch(CURR_URL).then(res => res.json()).then(data => {
       setMovies(data.results.map(movie =>  {
         if(favouriteMovies.find(o => o.id === movie.id)){
@@ -47,15 +51,16 @@ function App() {
     });
     setSortByOptions([{"name":"Popularity","id":0},{"name":"Rating","id":1},{"name":"Date Of Release","id":2},{"name":"Vote Count","id":3}]);
   },[]);
+
   function handleSearchTextChange(e){
     setSearchText(e.target.value);
   }
 
   useEffect(()=>{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favouriteMovies))
     if(favTab){
       setMovies(favouriteMovies);
     }
-
   },[favouriteMovies])
 
   function handleMovies(e){
@@ -63,7 +68,6 @@ function App() {
     e.preventDefault();
     if(searchText){
       fetch(SEARCH_URL+searchText).then(res => res.json()).then(data => {
-        // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
         setMovies(data.results.map(movie =>  {
           if(favouriteMovies.find(o => o.id === movie.id)){
             return {...movie,"isLiked":true}
@@ -107,8 +111,21 @@ function App() {
     setMovies(favouriteMovies);
   }
 
-  function handleSortByChange(e){
+  function handleHome(){
     setFavTab(false);
+    fetch(CURR_URL).then(res => res.json()).then(data => {
+      // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+      setMovies(data.results.map(movie =>  {
+        if(favouriteMovies.find(o => o.id === movie.id)){
+          return {...movie,"isLiked":true}
+        }
+        return {...movie,"isLiked":false}
+      }));
+    });
+  }
+
+  function handleSortByChange(e){
+    // setFavTab(false);
     setSortByOption(e.target.value);
     setMovies(prev => {
       switch(e.target.value){
@@ -134,6 +151,9 @@ function App() {
             <form onSubmit={handleMovies}>
               <input type="text" placeholder="Search" value={searchText} className="search" onChange={handleSearchTextChange}></input><span className="searchIcon" onClick={handleMovies}><FontAwesomeIcon icon={faSearch}></FontAwesomeIcon></span>
             </form>
+            <div className="home" onClick={handleHome}>
+              Home
+            </div>
             <div className="filter-container">
               <span>Genre:</span>
               <Dropdown options={genreOptions} selectedOption={genreOption} onChangeOption={handleGenreChange}/>
