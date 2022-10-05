@@ -3,7 +3,7 @@ import './App.css';
 import Dropdown from './Dropdown';
 import MovieList from './MovieList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { fas, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 export const FavouriteMoviesContext = createContext();
 
@@ -34,11 +34,14 @@ function App() {
   const [searchText,setSearchText] = useState("");
   const [favouriteMovies,setFavouriteMovies] =  useState([]);
   const [favTab, setFavTab] = useState(false);
+  const [loading,setLoading] = useState(true);
   
   useEffect(() => {
     const storedFavs = JSON.parse(localStorage.getItem(STORAGE_KEY))
     if(storedFavs) setFavouriteMovies(storedFavs);
+    setLoading(true)
     fetch(CURR_URL).then(res => res.json()).then(data => {
+      setLoading(false)
       setMovies(data.results.map(movie =>  {
         if(favouriteMovies.find(o => o.id === movie.id)){
           return {...movie,"isLiked":true}
@@ -46,7 +49,9 @@ function App() {
         return {...movie,"isLiked":false}
       }));
     });
+    setLoading(true)
     fetch(OPTIONS_URL).then(res => res.json()).then(data => {
+      setLoading(false)
       setGenreOptions(data.genres);
     });
     setSortByOptions([{"name":"Popularity","id":0},{"name":"Rating","id":1},{"name":"Date Of Release","id":2},{"name":"Vote Count","id":3}]);
@@ -67,7 +72,9 @@ function App() {
     setFavTab(false);
     e.preventDefault();
     if(searchText){
+      setLoading(true)
       fetch(SEARCH_URL+searchText).then(res => res.json()).then(data => {
+        setLoading(false)
         setMovies(data.results.map(movie =>  {
           if(favouriteMovies.find(o => o.id === movie.id)){
             return {...movie,"isLiked":true}
@@ -76,7 +83,9 @@ function App() {
         }));
       });
     }else{
+      setLoading(true)
       fetch(CURR_URL).then(res => res.json()).then(data => {
+        setLoading(false)
         // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
         setMovies(data.results.map(movie =>  {
           if(favouriteMovies.find(o => o.id === movie.id)){
@@ -94,7 +103,9 @@ function App() {
     let val = e.target.value;
     setGenreOption(val);
     let id = genreIds[val];
+    setLoading(true)
     fetch(`${CURR_URL}&with_genres=${id}`).then(res => res.json()).then(data => {
+      setLoading(false)
       // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
       setMovies(data.results.map(movie =>  {
         if(favouriteMovies.find(o => o.id === movie.id)){
@@ -113,7 +124,9 @@ function App() {
 
   function handleHome(){
     setFavTab(false);
+    setLoading(true)
     fetch(CURR_URL).then(res => res.json()).then(data => {
+      setLoading(false)
       // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
       setMovies(data.results.map(movie =>  {
         if(favouriteMovies.find(o => o.id === movie.id)){
@@ -142,6 +155,12 @@ function App() {
       }
     })
   }
+
+  if(loading) return(
+    <div className='loading'>
+      Loading...
+    </div>
+  )
 
   return(
     <FavouriteMoviesContext.Provider value={[favouriteMovies,setFavouriteMovies]}>
