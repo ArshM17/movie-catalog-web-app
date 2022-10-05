@@ -32,6 +32,7 @@ function App() {
   const [sortByOption, setSortByOption] = useState();
   const [searchText,setSearchText] = useState("");
   const [favouriteMovies,setFavouriteMovies] =  useState([]);
+  const [favTab, setFavTab] = useState(false);
   useEffect(() => {
     fetch(CURR_URL).then(res => res.json()).then(data => {
       setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
@@ -45,7 +46,15 @@ function App() {
     setSearchText(e.target.value);
   }
 
+  useEffect(()=>{
+    if(favTab){
+      setMovies(favouriteMovies);
+    }
+
+  },[favouriteMovies])
+
   function handleMovies(e){
+    setFavTab(false);
     e.preventDefault();
     if(searchText){
       fetch(SEARCH_URL+searchText).then(res => res.json()).then(data => {
@@ -60,6 +69,7 @@ function App() {
   }
 
   function handleGenreChange(e){
+    setFavTab(false);
     let val = e.target.value;
     setGenreOption(val);
     let id = genreIds[val];
@@ -70,10 +80,12 @@ function App() {
   }
 
   function displayFavourites(){
+    setFavTab(true);
     setMovies(favouriteMovies);
   }
 
   function handleSortByChange(e){
+    setFavTab(false);
     setSortByOption(e.target.value);
     setMovies(prev => {
       switch(e.target.value){
