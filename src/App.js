@@ -35,7 +35,12 @@ function App() {
   const [favTab, setFavTab] = useState(false);
   useEffect(() => {
     fetch(CURR_URL).then(res => res.json()).then(data => {
-      setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+      setMovies(data.results.map(movie =>  {
+        if(favouriteMovies.find(o => o.id === movie.id)){
+          return {...movie,"isLiked":true}
+        }
+        return {...movie,"isLiked":false}
+      }));
     });
     fetch(OPTIONS_URL).then(res => res.json()).then(data => {
       setGenreOptions(data.genres);
@@ -58,11 +63,23 @@ function App() {
     e.preventDefault();
     if(searchText){
       fetch(SEARCH_URL+searchText).then(res => res.json()).then(data => {
-        setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+        // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+        setMovies(data.results.map(movie =>  {
+          if(favouriteMovies.find(o => o.id === movie.id)){
+            return {...movie,"isLiked":true}
+          }
+          return {...movie,"isLiked":false}
+        }));
       });
     }else{
       fetch(CURR_URL).then(res => res.json()).then(data => {
-        setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+        // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+        setMovies(data.results.map(movie =>  {
+          if(favouriteMovies.find(o => o.id === movie.id)){
+            return {...movie,"isLiked":true}
+          }
+          return {...movie,"isLiked":false}
+        }));
       });
     }
     setSortByOption("Popularity");
@@ -74,7 +91,13 @@ function App() {
     setGenreOption(val);
     let id = genreIds[val];
     fetch(`${CURR_URL}&with_genres=${id}`).then(res => res.json()).then(data => {
-      setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+      // setMovies(data.results.map(movie =>  {return {...movie,"isLiked":false}}));
+      setMovies(data.results.map(movie =>  {
+        if(favouriteMovies.find(o => o.id === movie.id)){
+          return {...movie,"isLiked":true}
+        }
+        return {...movie,"isLiked":false}
+      }));
     });
     setSearchText("");
   }

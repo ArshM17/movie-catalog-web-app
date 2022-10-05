@@ -49,8 +49,8 @@ span{
 .main{
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    margin-left: 120px;
+    justify-content: start;
+    margin-left: 140px;
     padding-top: 10px;
     /* padding-left: 30px; */
 }
