@@ -12,6 +12,7 @@ const genres = {28:"Action",12:"Adventure",16:"Animation",35:"Comedy",80:"Crime"
 export default function Movie( {movie} ) {
   const [isLiked,setIsLiked] = useState(movie.isLiked);
   const [favouriteMovies,setFavouriteMovies] = useContext(FavouriteMoviesContext);
+  const [isOpen,setIsOpen] = useState(false);
   function handleLike(id){
     movie.isLiked = !movie.isLiked;
     setIsLiked(movie.isLiked)
@@ -27,20 +28,22 @@ export default function Movie( {movie} ) {
   
 
   return (
+    <>
     <div className="movie">
-        <img src={`${IMAGE_URL}${movie.poster_path}`} alt="alt"></img>
-        <span className="heart" onClick={()=>handleLike(movie.id)} style={{color: isLiked? "red" : "white"}}><FontAwesomeIcon icon={faHeart}></FontAwesomeIcon></span>
-        <div className="info">
-            <div className="title-rating">
-                <h4 className="title">{movie.title}</h4>
-                <h5 className="rating">{movie.vote_average}<FontAwesomeIcon icon={faStar}></FontAwesomeIcon></h5>
-            </div>
-            <div className="genres">
-                {movie.genre_ids.map((id) => {
-                     return <span key={id}>{genres[id]}</span>
-                })}
-            </div>
-        </div>
+      <img src={`${IMAGE_URL}${movie.poster_path}`} alt="alt" onClick={()=>setIsOpen(true)}></img>
+      <span className="heart" onClick={()=>handleLike(movie.id)} style={{color: isLiked? "red" : "white"}}><FontAwesomeIcon icon={faHeart}></FontAwesomeIcon></span>
+      <div className="info">
+          <div className="title-rating">
+              <h4 className="title">{movie.title}</h4>
+              <h5 className="rating">{movie.vote_average}<FontAwesomeIcon icon={faStar}></FontAwesomeIcon></h5>
+          </div>
+          <div className="genres">
+              {movie.genre_ids.map((id) => {
+                  return <span key={id}>{genres[id]}</span>
+              })}
+          </div>
+      </div>
     </div>
+    </>
   )
 }
