@@ -3,7 +3,7 @@ import './App.css';
 import Dropdown from './Dropdown';
 import MovieList from './MovieList';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { fas, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 export const FavouriteMoviesContext = createContext();
 
