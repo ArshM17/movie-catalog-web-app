@@ -10,5 +10,10 @@ Clone the repo:
 
 ## Screen Shots
 
+![](images/sc1.png)
 
+![](images/sc2.png)
 
+![](images/sc3.png)
+
+![](images/sc4.png)
