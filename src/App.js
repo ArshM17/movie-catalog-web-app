@@ -43,7 +43,7 @@ function App() {
     fetch(CURR_URL).then(res => res.json()).then(data => {
       setLoading(false)
       setMovies(data.results.map(movie =>  {
-        if(favouriteMovies.find(o => o.id === movie.id)){
+        if(storedFavs.find(o => o.id === movie.id)){
           return {...movie,"isLiked":true}
         }
         return {...movie,"isLiked":false}
@@ -161,6 +161,9 @@ function App() {
       Loading...
     </div>
   )
+
+  // console.log(movies);
+  // console.log(favouriteMovies);
 
   return(
     <FavouriteMoviesContext.Provider value={[favouriteMovies,setFavouriteMovies]}>
