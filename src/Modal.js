@@ -1,7 +1,7 @@
 import React from 'react'
 
 const overlay = {
-  postition:'fixed',
+  position:'fixed',
   top:0,
   left:0,
   right:0,
@@ -11,12 +11,13 @@ const overlay = {
 }
 
 const modalstyle = {
-  postition:'fixed',
-  // top:'50%',
-  // left:'50%',
-  // transform: "translate(-50%,-50%)",
-  backgroundColor: '#FFF',
-  // padding:"10px",
+  position:'fixed',
+  width: '50%',
+  top:'50%',
+  left:'50%',
+  transform: "translate(-50%,-50%)",
+  backgroundColor: 'white',
+  padding:"10px",
   zindex:1000
 }
 

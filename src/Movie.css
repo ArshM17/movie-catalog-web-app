@@ -3,7 +3,7 @@
     min-width: 150px;
     margin: 10px;
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; */
     transition: 300ms;
     border-radius: 3px;
 }

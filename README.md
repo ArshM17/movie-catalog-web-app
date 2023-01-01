@@ -2,6 +2,8 @@
 
 Simple Movie Catalog App to browse for movies. 
 
+[Click here to see the final product](https://arshm17.github.io/movie-catalog-web-app/)
+
 ## Installation
 
 Clone the repo:
